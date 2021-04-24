@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: app
+    build: .
+    command: yarn start
+    volumes: 
+      - .:/app
+      - /app/node_modules
+    env_file: 
+      - ./src/config/config.js
+    ports:
+      - 3000:3000
