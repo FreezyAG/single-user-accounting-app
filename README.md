@@ -221,8 +221,12 @@ yarn test
 
 ### application/json
 
-### Get postman collection link [here](https://www.getpostman.com/collections/f7f16299508219eb4829)
+### The app is hosted on heroku with the base URL as 
+```
+https://single-user-accounting-app.herokuapp.com
+```
 
+### Get postman collection link [here](https://www.getpostman.com/collections/f7f16299508219eb4829)
 ## The Design Principles used are:
 
 - Single Responsibility Principle
