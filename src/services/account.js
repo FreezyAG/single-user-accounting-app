@@ -10,7 +10,6 @@ const { accountStore, transactionHistoryStore } = require('../db/database');
 const logger = require('../lib/logger');
 const { throwError } = require('../utils/error');
 
-exports.accountId = accountStore[0].id; // this is a constant because we emulate a single user
 
 /**
  * Persists the transaction history
@@ -29,7 +28,7 @@ const saveTransaction = (transactionHistory) => {
  * @return object
  */
 const creditUserAccount = (accountId, amount) => {
-  const account = accountStore.find((acc) => accountId === acc.id);
+  const account = accountStore[accountId];
 
   account.balance += amount;
   account.effectiveDateTime = new Date();
@@ -47,7 +46,7 @@ const creditUserAccount = (accountId, amount) => {
  * @return object
  */
 const debitUserAccount = (accountId, amount) => {
-  const account = accountStore.find((acc) => accountId === acc.id);
+  const account = accountStore[accountId];
   if (account.balance < amount) {
     throwError('Insufficient amount', 422);
   }
@@ -68,7 +67,7 @@ const debitUserAccount = (accountId, amount) => {
 const getAccountBalance = (accountId) => {
   if (lock.isBusy(accountId)) throwError('Service Unavailable', 503);
 
-  const accountBalance = accountStore.find((account) => accountId === account.id).balance;
+  const accountBalance = accountStore[accountId].balance;
   return { accountBalance };
 };
 
@@ -81,7 +80,7 @@ const getAccountBalance = (accountId) => {
 const getAccountDetails = (accountId) => {
   if (lock.isBusy(accountId)) throwError('Service Unavailable', 503);
 
-  return { ...accountStore.find((account) => accountId === account.id) };
+  return { ...accountStore[accountId] };
 };
 
 /**

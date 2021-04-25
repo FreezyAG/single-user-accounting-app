@@ -4,7 +4,8 @@
 const halson = require('halson');
 
 /* ---------------------------- internal imports ---------------------------- */
-const { bankService, accountId } = require('../services/account');
+const { bankService } = require('../services/account');
+const { accountId } = require('../db/database');
 const {
   sendSuccessResponse,
   sendFailureResponse,

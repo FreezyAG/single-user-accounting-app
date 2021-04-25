@@ -5,16 +5,16 @@ const request = require('supertest');
 
 const app = express();
 
-const { accountStore, transactionHistoryStore } = require('../../src/db/database');
+const { accountStore, transactionHistoryStore, accountId } = require('../../src/db/database');
 const accountRoute = require('../../src/routes/account');
 const { resetDB } = require('../utils/util');
 
 app.use(bodyParser.json());
 app.use('/api', accountRoute);
 
-beforeAll(() => resetDB(accountStore, transactionHistoryStore));
+beforeAll(() => resetDB({ accountStore, accountId, transactionHistoryStore }));
 
-beforeEach(() => resetDB(accountStore, transactionHistoryStore));
+beforeEach(() => resetDB({ accountStore, accountId, transactionHistoryStore }));
 
 describe('Referral App Integration Test', () => {
   describe('accountBalance', () => {
@@ -39,7 +39,7 @@ describe('Referral App Integration Test', () => {
   describe('getAccountDetails', () => {
     async function getAccountDetails() {
       const { body } = await request(app)
-        .get('/api/accountDetails/afca119c-98b8-4714-8639-a4c323bf1c4b');
+        .get(`/api/accountDetails/${accountId}`);
       return {
         body,
       };
@@ -50,7 +50,7 @@ describe('Referral App Integration Test', () => {
       expect(responseBody).toBeObject();
       expect(responseBody.error).toBe(false);
       expect(responseBody.message).toBe('successful operation');
-      expect(responseBody.data.id).toBe('afca119c-98b8-4714-8639-a4c323bf1c4b');
+      expect(responseBody.data.id).toBe(accountId);
       expect(responseBody.data.balance).toBe(10000);
       done();
     });
@@ -115,10 +115,7 @@ describe('Referral App Integration Test', () => {
       amount: 1000,
       type: 'debit',
     };
-    const debitAboveAccBalRequestBody = {
-      amount: 20000,
-      type: 'debit',
-    };
+
     async function initiateTransaction(requestBody) {
       const { body } = await request(app)
         .post('/api/initiateTransaction')
